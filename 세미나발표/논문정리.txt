@@ -1,0 +1,83 @@
+0. third party in-app payment
+	cashier, merchant  -- 손님은 merchant에게 직접 pay하는게 아니라 cashier한테 pay한다.
+	cashier는 merchant와 손님 둘 다 에게 trust 받는다. 손님은 merchant에게 직접적으로 financial 정보를 줄 필요가 없다.
+https://en.wikipedia.org/wiki/Cashier_as_a_service
+
+어휘
+1. attack vector
+2. status quo 현재상황
+3. SDK
+4. SHA1-RSA
+5. MD5 (salt)
+6. Adeversary Model
+7. ARP spoof
+9. eavesdropping
+
+
+
+<Intro>
+1. third party in-app payment
+2. traditional payment
+3. in-app payment's error-prone
+4. web application을 그대로 mobile에 적용하기 어려움
+5. World's largest mobile payment market- China, supports third-party in-app payments only -만약 뚫리면 손해막심
+6. Questions, to Answer question, analysis, 대상, cause
+
+<In-App payment Demystified>
+1. process of how an app fulfils a transaction이 obscure한 이유 
+	i) implementation variation of in-app payment is significant-has no unified specification to follow
+	ii) cashier release doc -> developer relies on those doc to integrate in-app payment SDKs -> inadequate to conclude the exact payment process
+	iii) testing in-app payment involves actual payment
+2. Demystify 하기 위해
+	i) give brief description of participant
+	ii) choose four popular cashier to anaylyze doc and code sample
+	iii) reverse-engineer popular app
+A. Definition
+	i) Merchant App
+	ii) Merchant Server
+	iii) TP-SDK
+	iv) Cashier Server
+B. Unveil Payment Process
+	Four popular Cashiers - each has at lease 100 million user
+	i) WexPay(wechat)
+	ii) AliPay(Alipay Walet)
+	iii) UniPay(Unionpay)
+	iv) BadPay(Baidu)
+C. TP-SDK
+[ProcessModel]
+Payment Process 2종류
+-> 간략한 방법, signing 방법(SHA RSA, MD5(hash))
+
+
+<Security Analysis>
+Several Reason-cause potential security flaw multi party 이므로 그 중 하나만 mistake있어도 whole vulnerable
+
+A. Adversary Model
+	Assumes
+B. Security Rules
+	Must obeyed throughout the whole process involving both cashiers and merchants
+	otherwise, process will be breached
+	i) Payment order must be generated or signed by the MS only
+	ii) Never place any secret in the MA(e.g., private key for signing)
+	iii) TP-SDK must inform user detailed information of the payment order.
+	iv) TP-SDK must verify the transaction belonging to the MA
+	v) Always use secure network communication btw client and server.
+	vi) Always verify the signature of received messages
+	vii) MS should make extra query to confirm notified payment's details
+
+	I) Payment Order는 MS만이 생성하고 서명해야 한다.
+	II) MA에 서명을 위한 Private key 등의 Secret가 있어서는 안된다.
+	III) TP-SDK는 User에게 Payment Order에 대한 상세한 정보를 Inform 해야 한다.
+	IV) TP-SDK는 MA에 속한 transaction을 Verify해야 한다.
+	V) Client와 Server는 항상 Secure Network Connection을 사용해야 한다.
+	VI) 받은 Message의 Signature를 항상 Verify 한다.
+	VII) MS는 notified payment의 detail을 확인하기 위해 extra query를 만들어야 한다.
+
+
+만약 위 rule 중 한개 혹은 이상이 안지켜 질 경우 4 types of attack 가능
+
+I) Order Tampering(Rule1, 7 위반)
+II) Notification Forging
+III) Order Substitute
+
+
